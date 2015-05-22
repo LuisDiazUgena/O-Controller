@@ -1,4 +1,4 @@
-#include <SoftwareSerial.h>
+//#include <SoftwareSerial.h>
 #include <MD_Parola.h>
 #include <MD_MAX72xx.h>
 
@@ -34,47 +34,41 @@ int pinBtn = 4;
 
 
 #define SPEED_TIME  100
-#define PAUSE_TIME  1000
+#define PAUSE_TIME  100
 
 MD_Parola P = MD_Parola(CS_PIN, MAX_DEVICES);
 
 uint8_t  inFX, outFX;
 textEffect_t	effect[] =
 {
-	PRINT,
-	SCAN_HORIZ,
-	SCROLL_LEFT,
-	WIPE,
-	SCROLL_UP_LEFT,
-	SCROLL_UP,
-	OPENING_CURSOR,
-	GROW_UP,
-	SCROLL_UP_RIGHT,
-	BLINDS,
-	CLOSING,
-	GROW_DOWN,
-	SCAN_VERT,
-	SCROLL_DOWN_LEFT,
-	WIPE_CURSOR,
-	DISSOLVE,
-	OPENING,
-	CLOSING_CURSOR,
-	SCROLL_DOWN_RIGHT,
-	SCROLL_RIGHT,
-	SLICE,
-	SCROLL_DOWN,
+  PRINT,
+  SCAN_HORIZ,
+  SCROLL_LEFT,
+  WIPE,
+  SCROLL_UP_LEFT,
+  SCROLL_UP,
+  OPENING_CURSOR,
+  GROW_UP,
+  SCROLL_UP_RIGHT,
+  BLINDS,
+  CLOSING,
+  GROW_DOWN,
+  SCAN_VERT,
+  SCROLL_DOWN_LEFT,
+  WIPE_CURSOR,
+  DISSOLVE,
+  OPENING,
+  CLOSING_CURSOR,
+  SCROLL_DOWN_RIGHT,
+  SCROLL_RIGHT,
+  SLICE,
+  SCROLL_DOWN,
 };
 
-uint8_t  curText;
-char	*pc[] = 
-{ 
-  ">",
-  "<",
-};
 
 void setup() {
 
-  //mySerial.begin(9600);
+  Serial.begin(9600);
 
   //Encoder
   pinMode(encoder1, INPUT);
@@ -89,15 +83,15 @@ void setup() {
   P.setInvert(false);
   //P.displayText(pc[curText], CENTER, SPEED_TIME, PAUSE_TIME,effect[PRINT], effect[PRINT] );
   P.setSpeed(1000);
- // P.setTextBuffer("O");
-  P.displayText("O", CENTER, SPEED_TIME, PAUSE_TIME,effect[WIPE], effect[WIPE] );
+  // P.setTextBuffer("O");
+  //P.displayText("O", CENTER, SPEED_TIME, PAUSE_TIME,effect[WIPE], effect[WIPE] );
   P.setIntensity(5);
-  
+
 }
 
 void loop() {
 
-  //mySerial.println(encoderValue);
+  Serial.println(encoderValue);
 
   MSB = digitalRead(encoder1); //MSB = most significant bit
   LSB = digitalRead(encoder2); //LSB = least significant bit
@@ -105,52 +99,33 @@ void loop() {
   encoded = (MSB << 1) | LSB; //converting the 2 pin value to single number
   sum  = (lastEncoded << 2) | encoded; //adding it to the previous encoded value
 
-  if (sum == 0b1101 || sum == 0b0100 || sum == 0b0010 || sum == 0b1011){
+  if (sum == 0b1101 || sum == 0b0100 || sum == 0b0010 || sum == 0b1011) {
     encoderValue ++;
-    P.displayText(">", CENTER, SPEED_TIME, PAUSE_TIME,effect[WIPE], effect[WIPE] );
-    animate();
+    P.displayText("-", CENTER, SPEED_TIME, PAUSE_TIME, effect[WIPE], effect[WIPE] );
+    anim();
+  } else {
+    //P.displayText("", CENTER, SPEED_TIME, PAUSE_TIME,effect[WIPE], effect[WIPE] );
   }
-  if (sum == 0b1110 || sum == 0b0111 || sum == 0b0001 || sum == 0b1000){
+  if (sum == 0b1110 || sum == 0b0111 || sum == 0b0001 || sum == 0b1000) {
     encoderValue --;
-    P.displayText("<", CENTER, SPEED_TIME, PAUSE_TIME,effect[WIPE], effect[WIPE] );
-    animate();
+    P.displayText("+", CENTER, SPEED_TIME, PAUSE_TIME, effect[WIPE], effect[WIPE] );
+    anim();
+  } else {
+    //P.displayText("", CENTER, SPEED_TIME, PAUSE_TIME,effect[WIPE], effect[WIPE] );
   }
 
   lastEncoded = encoded; //store this value for next time
 
-
-  animate();
+  //anim();
 
 }
 
+void anim() {
 
-void animate(){
-  if (P.displayAnimate()) // animates and returns true when an animation is completed
-  {
-    /*
-    // Set the display for the next string.
-    curText = (++curText) % ARRAY_SIZE(pc);
-    //P.setTextBuffer(pc[curText]);
-
-    //P.setTextEffect(effect[inFX], effect[outFX]);
-    
-    // When we have gone back to the first string, set a new exit effect
-    // and when we have done all those set a new entry effect.
-    if (curText == 0)
-    {
-      outFX = (++outFX) % ARRAY_SIZE(effect);
-      if (outFX == 0)
-      {
-        inFX = (++inFX) % ARRAY_SIZE(effect);
-        if (inFX == 0)
-          P.setInvert(!P.getInvert());
-      }
-        
-      P.setTextEffect(effect[inFX], effect[outFX]);
-    } */
-
-    // Tell Parola we have a new animation
-    P.displayReset();
-  }
+  do {
+    P.displayAnimate();
+  } while (!P.displayAnimate());
+  P.displayReset();
 }
+
 
