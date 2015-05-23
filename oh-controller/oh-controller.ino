@@ -33,8 +33,8 @@ int pinBtn = 4;
 #define	USE_UI_CONTROL	0
 
 
-#define SPEED_TIME  100
-#define PAUSE_TIME  100
+#define SPEED_TIME  50
+#define PAUSE_TIME  50
 
 MD_Parola P = MD_Parola(CS_PIN, MAX_DEVICES);
 
@@ -68,7 +68,7 @@ textEffect_t	effect[] =
 
 void setup() {
 
-  Serial.begin(9600);
+  //Serial.begin(9600);
 
   //Encoder
   pinMode(encoder1, INPUT);
@@ -91,7 +91,7 @@ void setup() {
 
 void loop() {
 
-  Serial.println(encoderValue);
+  //Serial.println(encoderValue);
 
   MSB = digitalRead(encoder1); //MSB = most significant bit
   LSB = digitalRead(encoder2); //LSB = least significant bit
@@ -101,15 +101,12 @@ void loop() {
 
   if (sum == 0b1101 || sum == 0b0100 || sum == 0b0010 || sum == 0b1011) {
     encoderValue ++;
-    P.displayText("-", CENTER, SPEED_TIME, PAUSE_TIME, effect[WIPE], effect[WIPE] );
-    anim();
-  } else {
-    //P.displayText("", CENTER, SPEED_TIME, PAUSE_TIME,effect[WIPE], effect[WIPE] );
-  }
-  if (sum == 0b1110 || sum == 0b0111 || sum == 0b0001 || sum == 0b1000) {
-    encoderValue --;
     P.displayText("+", CENTER, SPEED_TIME, PAUSE_TIME, effect[WIPE], effect[WIPE] );
-    anim();
+    anim1();
+  }else if (sum == 0b1110 || sum == 0b0111 || sum == 0b0001 || sum == 0b1000) {
+    encoderValue --;
+    P.displayText("-", CENTER, SPEED_TIME, PAUSE_TIME, effect[WIPE], effect[WIPE] );
+    anim1();
   } else {
     //P.displayText("", CENTER, SPEED_TIME, PAUSE_TIME,effect[WIPE], effect[WIPE] );
   }
@@ -128,4 +125,11 @@ void anim() {
   P.displayReset();
 }
 
+void anim1(){
+  P.displayAnimate();
+  
+  if (P.displayAnimate()){
+    P.displayReset();
+  }
+}
 
