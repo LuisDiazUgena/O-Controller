@@ -25,6 +25,8 @@ int sum;
 int encoder1 = 2, encoder2 = 3;
 int pinBtn = 4;
 
+bool state = false; // not click
+
 //Led Display
 
 #define	MAX_DEVICES	1
@@ -87,15 +89,27 @@ void loop() {
 
   }
 
+  //Click 
+  state = digitalRead(pinBtn);
+  
+  if (state){
+    writeClick();
+    nextTime = millis() + intervale;
+    Serial.print("State= ");
+    Serial.println(state);
+  }
+  
   lastEncoded = encoded; //store this value for next time
 
-  if (millis() > nextTime ){
+  if (millis() > nextTime ) {
     LM.clearDisplay(0);
+    LM.shutdown(0, true);
   }
 
 }
 
 void writePlus() {
+  LM.shutdown(0, false);
   LM.clearDisplay(0);
 
   LM.setLed(0, 0, 3, true);
@@ -118,14 +132,57 @@ void writePlus() {
 }
 
 void writeMinus() {
+  LM.shutdown(0, false);
   LM.clearDisplay(0);
-  int col = 1, row = 3;
 
-  for (col = 0; col < 8; col++) {
-    LM.setLed(0, row, col, true);
-    delay(animTime);
-  }
+  LM.setLed(0, 0, 4, true);
+  delay(animTime);
+  LM.setLed(0, 1, 3, true);
+  delay(animTime);
+  LM.setLed(0, 2, 2, true);
+  delay(animTime);
+  LM.setLed(0, 3, 1, true);
+  delay(animTime);
+  LM.setLed(0, 4, 2, true);
+  delay(animTime);
+  LM.setLed(0, 5, 3, true);
+  delay(animTime);
+  LM.setLed(0, 6, 4, true);
+  delay(animTime);
+  LM.setLed(0, 7, 5, true);
+  delay(animTime);
 
 }
 
+void writeClick() {
+
+  LM.shutdown(0, false);
+  LM.clearDisplay(0);
+
+  LM.setLed(0, 1, 3, true);
+  LM.setLed(0, 1, 4, true);
+  LM.setLed(0, 2, 2, true);
+  LM.setLed(0, 2, 3, true);
+  LM.setLed(0, 2, 4, true);
+  LM.setLed(0, 2, 5, true);
+  LM.setLed(0, 3, 1, true);
+  LM.setLed(0, 3, 2, true);
+  LM.setLed(0, 3, 3, true);
+  LM.setLed(0, 3, 4, true);
+  LM.setLed(0, 3, 5, true);
+  LM.setLed(0, 3, 6, true);
+  LM.setLed(0, 4, 1, true);
+  LM.setLed(0, 4, 2, true);
+  LM.setLed(0, 4, 3, true);
+  LM.setLed(0, 4, 4, true);
+  LM.setLed(0, 4, 5, true);
+  LM.setLed(0, 4, 6, true);
+  LM.setLed(0, 5, 2, true);
+  LM.setLed(0, 5, 3, true);
+  LM.setLed(0, 5, 4, true);
+  LM.setLed(0, 5, 5, true);
+  LM.setLed(0, 6, 3, true);
+  LM.setLed(0, 6, 4, true);
+
+}
 
