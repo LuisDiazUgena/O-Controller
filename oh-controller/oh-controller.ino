@@ -37,7 +37,7 @@ bool state = false; // not click
 LedControl LM = LedControl(DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
 
 int animTime = 0; // Delay in ms between turning on each led.
-int intervale = 250; // Time in ms that the anim must be shown.
+int intervale = 500; // Time in ms that the anim must be shown.
 int nextTime;
 
 void setup() {
@@ -59,7 +59,7 @@ void setup() {
    */
   LM.shutdown(0, false);
   /* Set the brightness to a medium values */
-  LM.setIntensity(0, 8);
+  LM.setIntensity(0, 15);
   /* and clear the display */
   LM.clearDisplay(0);
 
@@ -103,7 +103,6 @@ void loop() {
 
   if (millis() > nextTime ) {
     LM.clearDisplay(0);
-    LM.shutdown(0, true);
   }
 
 }
